@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Docker</title>
+    <style>
+      body {
+        height: 100vh;
+        text-align: center;
+        margin: 0 auto;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: auto;
+        align-self: center;
+        background-color: rgb(37, 37, 37);
+      }
+      h1 {
+        top: 50%;
+        left: 50%;
+        margin: -125px 0 0 -125px;
+        position: absolute;
+        font-size: 50px;
+        color: #007edf;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="demo"></h1>
+  </body>
+  <script>
+    var i = 0;
+    var txt = "Hello Docker!!!"; /* Текст */
+    var speed = 120; /* Скорость/длительность эффекта в миллисекундах */
+    typeWriter();
+    function typeWriter() {
+      if (i < txt.length) {
+        document.getElementById("demo").innerHTML += txt.charAt(i);
+        i++;
+        setTimeout(typeWriter, speed);
+      }
+    }
+  </script>
+</html>
