@@ -1,11 +1,13 @@
 import pool from './mysqlPool.mjs'
+const baseURL = 'http://localhost:3000/api/todos'; // Замените на фактический URL вашего сервера
 
+// Функция для получения задач (todos) из сервера.
 const readRecords = () =>
   new Promise((resolve, reject) =>
     pool.getConnection((err, connection) => {
       if (err) return reject(err)
       connection.query(
-        'SELECT * FROM `times` ORDER BY created_at DESC',
+        'SELECT * FROM `todos`',
         (err, results) => {
           if (err) return reject(err)
           resolve(results)
@@ -14,34 +16,46 @@ const readRecords = () =>
       connection.release()
     })
   )
-
-const insertRecord = (time) =>
-  new Promise((resolve, reject) =>
+// Функция для создания задачи (todo) на сервере.
+const insertRecord = (text) => {
+  return new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
-      if (err) return reject(err)
+      if (err) return reject(err);
+
       connection.query(
-        `INSERT INTO times (time) VALUES ('${time}')`,
+        'INSERT INTO `todos` (text) VALUES (?)',
+        [text],
         (err, result) => {
-          if (err) return reject(err)
-          console.log(`New time ${time} was saved to the DB`)
-          resolve(result)
+          if (err) return reject(err);
+
+          const insertedId = result.insertId;
+          console.log(`Задача с ID ${insertedId} была добавлена в базу данных`);
+          resolve(insertedId);
+          connection.release();
         }
-      )
-      connection.release()
-    })
-  )
+      );
+    });
+  });
+};
 
-const deleteRecord = (id) =>
-  new Promise((resolve, reject) =>
+const deleteRecord = (id) => {
+  return new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
-      if (err) return reject(err)
-      connection.query(`DELETE FROM times WHERE id=${id}`, (err, result) => {
-        if (err) return reject(err)
-        console.log(`Time with id ${id} was deleted from the DB`)
-        resolve(result)
-      })
-      connection.release()
-    })
-  )
+      if (err) return reject(err);
 
-export { readRecords, insertRecord, deleteRecord }
+      connection.query(
+        'DELETE FROM `todos` WHERE `id` = ?',
+        [id],
+        (err, result) => {
+          if (err) return reject(err);
+
+          console.log(`Задача с ID ${id} была удалена из базы данных`);
+          resolve();
+          connection.release();
+        }
+      );
+    });
+  });
+};
+
+export { readRecords, insertRecord, deleteRecord };

@@ -13,21 +13,19 @@ const app = express()
 app.use(bodyParser.json())
 app.use(cors())
 
-app.get('/', (_, res) => {
-  res.send('Hello from the time saving service!')
-})
+app.get('/todos', async (_, res) => {
+  res.send(await readRecords());
+});
 
-app.get('/times', async (_, res) => {
-  res.send(await readRecords())
-})
 
-app.post('/times', async (req, res) => {
-  res.send(await insertRecord(req.body.time))
-})
+app.post('/todos', async (req, res) => {
+  res.send(await insertRecord(req.body.text)); // Замените `time` на `text` и используйте `req.body.text`.
+});
 
-app.delete('/time/:id', async (req, res) => {
-  res.send(await deleteRecord(req.params.id))
-})
+// Вместо `/time/:id` используйте `/api/todos/:id` как роут для удаления задачи (todo) по ее идентификатору.
+app.delete('/todos/:id', async (req, res) => {
+  res.send(await deleteRecord(req.params.id));
+});
 
 app.listen(PORT, () => {
   console.log(`Express web server is running at http://localhost:${PORT}`)

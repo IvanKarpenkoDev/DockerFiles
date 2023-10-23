@@ -1,6 +1,6 @@
 FROM node:alpine
 
-WORKDIR /time-app
+WORKDIR /app
 
 COPY package*.json ./
 
